@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Debut Header -->
+<th:block th:include="partials/_head/index :: head"></th:block>
+<!-- Fin Header -->
+
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- Debut TopBar -->
+		<th:block th:include="partials/_topbar/index :: topbar"></th:block>
+		<!-- Fin TopBar -->
+
+		<!-- Main Sidebar Container -->
+		<!-- Debut Left Side Bar -->
+		<th:block th:include="partials/_left_sidebar/index :: left-sidebar"></th:block>
+		<!-- Fin Left Side Bar -->
+
+
+		<div class="content" th:fragment="container">
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+
+				<!-- Content Header (Page header) -->
+				<div class="content-header">
+					<div class="container-fluid">
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<h1 class="m-0 text-dark">Utilisateurs</h1>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-6">
+								<ol class="breadcrumb float-sm-right">
+									<li class="breadcrumb-item"><a href="#">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="#">S&eacute;curit&eacute;s</a></li>
+									<li class="breadcrumb-item active">Utilisateurs</li>
+								</ol>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- /.content-header -->
+
+				<!-- Main content -->
+				<section class="content">
+					<div class="container-fluid">
+
+
+						<!-- Main content -->
+						<section class="content">
+							<div class="container-fluid">
+								<div class="row">
+									<!-- left column -->
+									<div class="col-md-12">
+										<!-- jquery validation -->
+										<div class="card card-primary">
+											<div class="card-header">
+												<h3 class="card-title">Formulaire de cr&eacute;ation</h3>
+											</div>
+											<!-- /.card-header -->
+											<!-- form start -->
+											<form th:action="@{/utilisateur/create}" method="post"
+												role="form" th:object="${user}">
+
+												<div class="card-body">
+
+													<div class="row">
+
+														<div class="col-sm-6">
+
+															<div class="form-group">
+																<label for="idRole">Profils</label> <select
+																	for="idRole" th:field="*{role}"
+																	class="form-control" style="width: 100%;">
+																	<option th:each="p: ${Roles}"
+																		th:value="${p.role}" th:text="${p.description}" />
+																</select>
+															</div>
+
+															
+															<div class="form-group">
+																<label for="civilite">Civilit&eacute;</label> <select
+																	for="civilite" th:field="*{civilite}"
+																	class="form-control" style="width: 100%;">
+
+																	<option th:value="M." th:text="Monsieur" />
+																	<option th:value="Mme" th:text="Madame" />
+																	<option th:value="Mlle" th:text="Mademoiselle" />
+																</select>
+															</div>
+
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="nom">Nom</label> <input type="text"
+																	th:field="*{nom}" class="form-control" id="nom"
+																	placeholder="" /> <span class="text-danger"
+																	th:errors="*{nom}"></span>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="prenoms">Pr&eacute;noms</label> <input
+																	type="text" th:field="*{prenoms}" class="form-control"
+																	id="prenoms" placeholder="" /> <span
+																	class="text-danger" th:errors="*{prenoms}"></span>
+															</div>
+
+														</div>
+
+
+
+														<div class="col-sm-6">
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="telephone">T&eacute;l&eacute;phone</label> <input
+																	type="text" th:field="*{telephone}"
+																	class="form-control" id="telephone" placeholder="" />
+																<span class="text-danger" th:errors="*{telephone}"></span>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="mobile">Mobile</label> <input type="text"
+																	th:field="*{mobile}" class="form-control" id="mobile"
+																	placeholder="" /> <span class="text-danger"
+																	th:errors="*{mobile}"></span>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="email">E-mail</label> <input type="text"
+																	th:field="*{email}" class="form-control" id="email"
+																	placeholder="" /> <span class="text-danger"
+																	th:errors="*{email}"></span>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="username">Login</label> <input type="text"
+																	th:field="*{username}" class="form-control" id="username"
+																	placeholder="" /> <span class="text-danger"
+																	th:errors="*{username}"></span>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="password">Mot de passe</label> <input
+																	type="password" th:field="*{password}"
+																	class="form-control" id="password" placeholder="" /> <span
+																	class="text-danger" th:errors="*{password}"></span>
+															</div>
+														</div>
+
+													</div>
+													<!-- /.card-body -->
+													<div class="card-footer">
+														<a th:href="@{/utilisateur}" type="button"
+															class="btn btn-default" data-dismiss="modal"> <span
+															class="fa fa-reply-all"></span> Retour
+														</a>
+														<button type="submit" class="btn btn-primary">
+															<span class="fa fa-save"></span> Enregistrer
+														</button>
+													</div>
+											</form>
+										</div>
+										<!-- /.card -->
+									</div>
+									<!--/.col (left) -->
+									<!-- right column -->
+									<div class="col-md-6"></div>
+									<!--/.col (right) -->
+								</div>
+								<!-- /.row -->
+							</div>
+							<!-- /.container-fluid -->
+						</section>
+						<!-- /.content -->
+
+
+					</div>
+					<!-- /.container-fluid -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.content-wrapper -->
+		</div>
+
+
+		<!-- Footer Start -->
+		<th:block th:include="partials/_footer/index :: footer"></th:block>
+		<!-- Footer End -->
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- Debut Foot -->
+	<th:block th:include="partials/_foot/index :: foot"></th:block>
+	<!-- Fin Foot -->
+</body>
+</html>
+

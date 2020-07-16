@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Debut Header -->
+<th:block th:include="partials/_head/index :: head"></th:block>
+<!-- Fin Header -->
+
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- Debut TopBar -->
+		<th:block th:include="partials/_topbar/index :: topbar"></th:block>
+		<!-- Fin TopBar -->
+
+		<!-- Main Sidebar Container -->
+		<!-- Debut Left Side Bar -->
+		<th:block th:include="partials/_left_sidebar/index :: left-sidebar"></th:block>
+		<!-- Fin Left Side Bar -->
+
+
+		<div class="content" th:fragment="container">
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+
+				<!-- Content Header (Page header) -->
+				<div class="content-header">
+					<div class="container-fluid">
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<h1 class="m-0 text-dark">SMS par p&eacute;riode</h1>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-6">
+								<ol class="breadcrumb float-sm-right">
+									<li class="breadcrumb-item"><a href="#">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="#">Reporting</a></li>
+									<li class="breadcrumb-item active">SMS par p&eacute;riode</li>
+								</ol>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- /.content-header -->
+
+				<!-- Main content -->
+				<section class="content">
+					<div class="container-fluid">
+
+
+
+						<!-- /.card -->
+						<div class="card">
+
+
+							<div class="card-header">
+								<form th:action="@{/smsparperiode/rechercher}" method="post"
+									role="form" th:object="${Rechercher}">
+
+									<div class="row">
+
+
+
+										<div class="row col-sm-12">
+											<div class="col-sm-5">
+												<div class="form-group">
+													<label for="client">Clients</label> <select for="client"
+														th:field="*{client}" id="client" onchange="findCompteByClientUsername();"
+														class="form-control" style="width: 100%;">
+														<option value="All">Tous les clients</option>
+														<option th:each="c: ${Clients}" th:value="${c.username}"
+															th:text="${c.nom}" />
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-5">
+												<div class="form-group">
+													<label for="compte">Comptes</label> <select for="compte"
+														th:field="*{compte}" id="compte" onchange="getCompteInformations();"
+														class="form-control" style="width: 100%;">
+														<option value="All">Tous les comptes</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										</div>
+
+
+
+										<div class="row">
+											<div class="row col-sm-12">
+												<div class="col-sm-5">
+													<div class="form-group">
+														<label for="nom">Date de d&eacute;but</label> <input
+															th:field="*{dateDebut}" type="date" class="form-control"
+															id="dateDebut" placeholder="" />
+													</div>
+												</div>
+												<div class="col-sm-5">
+													<div class="form-group">
+														<label for="nom">Date de fin</label> <input type="date"
+															th:field="*{dateFin}" class="form-control" id="dateFin"
+															placeholder=""/>
+													</div>
+												</div>
+												<div class="col-sm-2">
+													<div class="form-group">
+														<label for="nom">Actions</label>
+														<button type="submit" class="btn btn-primary">
+															<span class="fa fa-search"></span> Rechercher
+														</button>
+														<!-- hr>
+													<button type="submit" class="btn btn-danger" target="_blank">
+														<span class="fa fa-download"></span> T&eacute;l&eacute;charger
+													</button-->
+													</div>
+												</div>
+											</div>
+										</div>
+								</form>
+
+
+							</div>
+							<!-- /.card-header -->
+							<div class="card-body">
+
+								<marquee bgcolor="#000080"
+									style="color: #FFFFFF; font-family: Book Antiqua"
+									behavior="scroll"> Un (1) sms re&ccedil;us fait 160
+									caract&egrave;res sans les caract&egrave;res sp&eacute;ciaux.
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									Deux (2) sms re&ccedil;us font 320 caract&egrave;res sans les
+									caract&egrave;res sp&eacute;ciaux.</marquee>
+								<div class="row">
+									<div class="col-md-3 col-sm-6 col-12">
+										<div class="info-box">
+											<span class="info-box-icon bg-info"><i
+												class="far fa-envelope"></i></span>
+
+											<div class="info-box-content">
+												<span class="info-box-text">SMS ENVOY&Eacute;S</span> <span
+													class="info-box-number" th:text="${smsEnvoyes}"></span>
+											</div>
+											<!-- /.info-box-content -->
+										</div>
+										<!-- /.info-box -->
+									</div>
+									<!-- /.col -->
+									<div class="col-md-3 col-sm-6 col-12">
+										<div class="info-box">
+											<span class="info-box-icon bg-success"><i
+												class="far fa-flag"></i></span>
+
+											<div class="info-box-content">
+												<span class="info-box-text">SMS RE&Ccedil;US</span> <span
+													class="info-box-number" th:text="${smsRecus}"></span>
+											</div>
+											<!-- /.info-box-content -->
+										</div>
+										<!-- /.info-box -->
+									</div>
+									<!-- /.col -->
+									<div class="col-md-3 col-sm-6 col-12">
+										<div class="info-box">
+											<span class="info-box-icon bg-danger"><i
+												class="far fa-copy"></i></span>
+
+											<div class="info-box-content">
+												<span class="info-box-text">SMS NON RE&Ccedil;US</span> <span
+													class="info-box-number" th:text="${smsNonRecu}"></span>
+											</div>
+											<!-- /.info-box-content -->
+										</div>
+										<!-- /.info-box -->
+									</div>
+									<!-- /.col -->
+									<div class="col-md-3 col-sm-6 col-12">
+										<div class="info-box">
+											<span class="info-box-icon bg-warning"><i
+												class="far fa-star"></i></span>
+
+											<div class="info-box-content">
+												<span class="info-box-text">SMS EN COURS</span> <span
+													class="info-box-number" th:text="${smsEncours}"></span>
+											</div>
+											<!-- /.info-box-content -->
+										</div>
+										<!-- /.info-box -->
+									</div>
+									<!-- /.col -->
+								</div>
+
+								<table id="example1" class="table table-bordered table-striped">
+
+
+									<thead>
+										<tr>
+											<th>N&deg;</th>
+											<th>Dates</th>
+											<th>Comptes</th>
+											<th>Senders</th>
+											<th>Destinataires</th>
+											<th>D&eacute;livr&eacute;s</th>
+											<th>Nombres</th>
+											<th>Prix Unitaire</th>
+											<th>Co&ucirc;ts</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="p, custStat:${listSms}">
+											<td th:text="${custStat.count}"></td>
+											<td th:text="${p.dateCreation}"></td>
+											<td th:text="${p.compte.compte}"></td>
+											<td th:text="${p.sender}"></td>
+											<td th:text="${p.destinataire}"></td>
+											<td>
+												<span th:if="${p.StatutDelivered == 'delivered'}" class="badge bg-success" th:text="Oui"></span>
+												<span th:if="${p.StatutDelivered != 'delivered'}" class="badge bg-danger" th:text="Non"></span>
+											</td>
+											
+											<td th:text="${p.nombreSms}"></td>
+											<!-- td th:if="${p.compte.destination.nom == 'Nationale'}" th:text="${p.compte.prixUnitaireNational}"></td>
+											<td th:if="${p.compte.destination.nom == 'Internationale'}" th:text="${p.compte.prixUnitaireInternational}"></td-->
+											<!-- td th:if="${p.compte.destination.nom == 'Nationale et Internationale'}" th:text="${p.compte.prixUnitaireInternational}"></td -->
+											<td
+												th:text="${(p.prixUnitaire != null ? p.prixUnitaire : 0)}"></td>
+											<td
+												th:text="${(p.prixUnitaire != null ? p.prixUnitaire : 0) * p.nombreSms}"></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+							<!-- /.card-body -->
+						</div>
+						<!-- /.card -->
+					</div>
+					<!-- /.container-fluid -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.content-wrapper -->
+		</div>
+
+
+		<!-- Footer Start -->
+		<th:block th:include="partials/_footer/index :: footer"></th:block>
+		<!-- Footer End -->
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- Debut Foot -->
+	<th:block th:include="partials/_foot/index :: foot"></th:block>
+	<!-- Fin Foot -->
+	
+		<script type="text/javascript"
+		th:src="@{/shared/reporting/historique/commercial/index.js}"></script>
+</body>
+</html>

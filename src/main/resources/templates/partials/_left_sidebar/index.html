@@ -1,0 +1,274 @@
+<div th:fragment="left-sidebar">
+	<aside class="main-sidebar sidebar-dark-primary elevation-4">
+		<!-- Brand Logo -->
+		<a th:href="@{/}" class="brand-link"> <!-- <img
+			th:src="@{/dist/img/logo.png}" alt="SMS Monitor"
+			class="brand-image img-circle elevation-3"> --> <span
+			class="brand-text text-center text-bold" align="center">HYPER
+				GATEWAY MONITOR</span>
+		</a>
+
+		<!-- Sidebar -->
+		<div class="sidebar">
+			<!-- Sidebar user panel (optional) -->
+
+			<div class="user-panel mt-3 pb-3 mb-3 d-flex">
+				<div class="image">
+					<img th:src="@{/dist/img/logo.png}" class="img-circle elevation-2"
+						alt=""
+						style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
+				</div>
+			</div>
+
+			<!-- Sidebar Menu -->
+			<nav class="mt-2">
+				<ul class="nav nav-pills nav-sidebar flex-column"
+					data-widget="treeview" role="menu" data-accordion="false">
+					<!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+
+					<!-- Tableau de bord ${active} ? active : ''-->
+					<li class="nav-item"><a th:href="@{/}" class="nav-link"
+						th:classappend="${(active_menu == '' || active_menu == 'accueil') ? 'active':''}">
+							<i class="nav-icon fas fa-tachometer-alt"></i>
+							<p>Tableau de bord</p>
+					</a></li>
+
+
+					<!-- Menu Envois de SMS -->
+					<li
+						th:if="${session.user.role.role == 'superadmin' || session.user.role.role == 'admin' || session.user.role.role == 'collaborateur'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'smsrecu') ? 'menu-open':''}"><a
+						href="#" class="nav-link"
+						th:classappend="${(active_menu == 'smsrecu') ? 'active':''}">
+							<i class="nav-icon fa fa-envelope"></i>
+							<p>
+								SMS <i class="right fas fa-angle-left"></i>
+							</p>
+					</a>
+
+						<ul class="nav nav-treeview">
+							<!-- Client -->
+							<li class="nav-item"><a th:href="@{/smsrecu}"
+								class="nav-link"
+								th:classappend="${active_menu == 'smsrecu' ? 'active':''}"> <i
+									class="far fa-circle nav-icon"></i>
+									<p>SMS Re&ccedil;us</p>
+							</a></li>
+						</ul></li>
+
+
+
+					<!-- Sécurités -->
+					<li th:if="${session.user.role.role == 'superadmin'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'role' || open_menu == 'utilisateur') ? 'menu-open':''}"><a
+						href="#" class="nav-link"
+						th:classappend="${(active_menu == 'role' || active_menu == 'utilisateur') ? 'active':''}">
+							<i class="nav-icon fa fa-lock"></i>
+							<p>
+								S&eacute;curit&eacute;s <i class="fas fa-angle-left right"></i>
+							</p>
+					</a>
+						<ul class="nav nav-treeview">
+
+							<!-- Rôle -->
+							<li class="nav-item"><a th:href="@{/role}" class="nav-link"
+								th:classappend="${(active_menu == 'role') ? 'active':''}"> <i
+									class="far fa-circle nav-icon"></i>
+									<p>Profils</p>
+							</a></li>
+
+							<li class="nav-item"><a th:href="@{/utilisateur}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'utilisateur') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Utilisateurs</p>
+							</a></li>
+						</ul></li>
+
+
+					<!-- Configurations -->
+					<li th:if="${session.user.role.role == 'superadmin'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'modeleemail' || open_menu == 'parametresmtp' || open_menu == 'alerteemail') ? 'menu-open':''}">
+						<a href="#" class="nav-link"
+						th:classappend="${(active_menu == 'modeleemail' || active_menu == 'parametresmtp' || active_menu == 'alerteemail') ? 'active':''}">
+							<i class="nav-icon fa fa-bars"></i>
+							<p>
+								Configurations <i class="fas fa-angle-left right"></i>
+							</p>
+					</a>
+						<ul class="nav nav-treeview">
+							
+							<li class="nav-item"><a th:href="@{/modeleemail}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'modeleemail') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Mod&egrave;les E-MAILS</p>
+							</a></li>
+
+							<li class="nav-item"><a th:href="@{/alerteemail}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'alerteemail') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Alertes E-MAILS</p>
+							</a></li>
+
+							<li class="nav-item"><a th:href="@{/parametresmtp}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'parametresmtp') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Param&egrave;tres SMTP</p>
+							</a></li>							
+						</ul>
+					</li>
+
+					<!-- Paramètres -->
+					<li th:if="${session.user.role.role == 'superadmin'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'setting' || open_menu == 'constructeur' || open_menu == 'passerelle' || open_menu == 'slot' || open_menu == 'port' || open_menu == 'puce'|| open_menu == 'operateur') ? 'menu-open':''}">
+						<a href="#" class="nav-link"
+						th:classappend="${(active_menu == 'setting' || active_menu == 'constructeur' || active_menu == 'passerelle' || active_menu == 'slot' || active_menu == 'port' || active_menu == 'puce' || active_menu == 'operateur') ? 'active':''}">
+							<i class="nav-icon fa fa-cogs"></i>
+							<p>
+								Param&egrave;tres <i class="fas fa-angle-left right"></i>
+							</p>
+					</a>
+						<ul class="nav nav-treeview">
+							<li class="nav-item"><a th:href="@{/setting}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'setting') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Setting</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/constructeur}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'constructeur') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Constructeurs</p>
+							</a></li>
+							<li class="nav-item"><a th:href="@{/passerelle}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'passerelle') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Passerelles</p>
+							</a></li>
+							
+							<li class="nav-item"><a th:href="@{/slot}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'slot') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Slots</p>
+							</a></li>
+							
+							<li class="nav-item"><a th:href="@{/port}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'port') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Ports</p>
+							</a></li>
+							
+							<li class="nav-item"><a th:href="@{/puce}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'puce') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Puces</p>
+							</a></li>
+
+							<li class="nav-item"><a th:href="@{/operateur}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'operateur') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Op&eacute;rateurs</p>
+							</a></li>
+													
+						</ul>
+					</li>
+
+
+
+					<!-- Reservations -->
+					<li th:if="${session.user.role.role == 'Client'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'mesutilisateur' || open_menu == 'mescompte' || open_menu == 'messender') ? 'menu-open':''}">
+						<a href="#" class="nav-link"
+						th:classappend="${(active_menu == 'mesutilisateur' || active_menu == 'mescompte' || active_menu == 'messender') ? 'active':''}">
+							<i class="nav-icon fa fa-users"></i>
+							<p>
+								Mon Compte <i class="right fas fa-angle-left"></i>
+							</p>
+					</a>
+
+						<ul class="nav nav-treeview">
+
+							<!-- Compte -->
+							<li class="nav-item"><a th:href="@{/mesutilisateur}"
+								class="nav-link"
+								th:classappend="${active_menu == 'mesutilisateur' ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Mes utilisateurs</p>
+							</a></li>
+
+
+							<!-- Compte -->
+							<li class="nav-item"><a th:href="@{/mescompte}"
+								class="nav-link"
+								th:classappend="${active_menu == 'mescompte' ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Mes comptes</p>
+							</a></li>
+
+							<!-- Senders -->
+							<li class="nav-item"><a th:href="@{/messender}"
+								class="nav-link"
+								th:classappend="${active_menu == 'messender' ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Mes senders</p>
+							</a></li>
+						</ul>
+					</li>
+
+
+					<!-- Paramètres -->
+					<li
+						th:if="${session.user.role.role == 'superadmin' || session.user.role.role == 'Commercial' || session.user.role.role == 'Admin'}"
+						class="nav-item has-treeview"
+						th:classappend="${(open_menu == 'smsparperiode') ? 'menu-open':''}">
+						<a href="#" class="nav-link"
+						th:classappend="${(active_menu == 'smsparperiode') ? 'active':''}">
+							<i class="nav-icon fas fa-chart-pie"></i>
+							<p>
+								Reporting <i class="fas fa-angle-left right"></i>
+							</p>
+					</a>
+						<ul class="nav nav-treeview"
+							th:if="${session.user.role.role == 'superadmin'}">
+
+							<li class="nav-item"><a th:href="@{/smsenvoyes}"
+								class="nav-link"
+								th:classappend="${(active_menu == 'smsenvoyes') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>SMS envoy&eacute;s</p>
+							</a></li>
+
+							<li class="nav-item"><a th:href="@{/audit}" class="nav-link"
+								th:classappend="${(active_menu == 'audit') ? 'active':''}">
+									<i class="far fa-circle nav-icon"></i>
+									<p>Audits</p>
+							</a></li>
+
+
+						</ul>
+
+
+					</li>
+				</ul>
+			</nav>
+			<!-- /.sidebar-menu -->
+		</div>
+		<!-- /.sidebar -->
+	</aside>
+
+</div>

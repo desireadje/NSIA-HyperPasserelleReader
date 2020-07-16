@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Debut Header -->
+<th:block th:include="partials/_head/index :: head"></th:block>
+<!-- Fin Header -->
+
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- Debut TopBar -->
+		<th:block th:include="partials/_topbar/index :: topbar"></th:block>
+		<!-- Fin TopBar -->
+
+		<!-- Main Sidebar Container -->
+		<!-- Debut Left Side Bar -->
+		<th:block th:include="partials/_left_sidebar/index :: left-sidebar"></th:block>
+		<!-- Fin Left Side Bar -->
+
+
+		<div class="content" th:fragment="container">
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+
+				<!-- Content Header (Page header) -->
+				<div class="content-header">
+					<div class="container-fluid">
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<h1 class="m-0 text-dark">Tableau de bord</h1>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-6">
+								<ol class="breadcrumb float-sm-right">
+									<li class="breadcrumb-item"><a href="#">Accueil</a></li>
+									<li class="breadcrumb-item active">Tableau de bord</li>
+								</ol>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- /.content-header -->
+
+				<!-- Main content -->
+				<section class="content">
+					<div class="container-fluid">
+						<!-- Small boxes (Stat box) -->
+						<div class="row">
+							<div class="col-lg-3 col-6">
+								<!-- small box -->
+								<div class="small-box bg-info">
+									<div class="inner">
+										<h4>Passerelles</h4>
+										<h4 th:text="*{nbreClient}"></h4>
+									</div>
+									<div class="icon">
+										<i class="ion ion-person-add"></i>
+									</div>
+									<a th:href="@{/reservation}" class="small-box-footer">Plus
+										de d&eacute;tails <i class="fas fa-arrow-circle-right"></i>
+									</a>
+								</div>
+							</div>
+							<!-- ./col -->
+							<div class="col-lg-3 col-6">
+								<!-- small box -->
+								<div class="small-box bg-success">
+									<div class="inner">										
+										<h4>Puces</h4>
+										<h4 th:text="*{nbreCompte}"></h4>
+									</div>
+									<div class="icon">
+										<i class="fa fa-bath"></i>
+									</div>
+									<a th:href="@{/location}" class="small-box-footer">Plus de
+										d&eacute;tails <i class="fas fa-arrow-circle-right"></i>
+									</a>
+								</div>
+							</div>
+							<!-- ./col -->
+							<div class="col-lg-3 col-6">
+								<!-- small box -->
+								<div class="small-box bg-warning">
+									<div class="inner">
+										<h4>Senders</h4>
+										<h4 th:text="*{nbreSender}"></h4>										
+									</div>
+									<div class="icon">
+										<i class="fa fa-home"></i>
+									</div>
+									<a href="#" class="small-box-footer">Plus de d&eacute;tails
+										<i class="fas fa-arrow-circle-right"></i>
+									</a>
+								</div>
+							</div>
+							<!-- ./col -->
+							<div class="col-lg-3 col-6">
+								<!-- small box -->
+								<div class="small-box bg-danger">
+									<div class="inner">
+										<h4>Connexions</h4>
+										<h4 th:text="*{nbreUser}"></h4>										
+									</div>
+									<div class="icon">
+										<i class="ion ion-cash"></i>
+									</div>
+									<a href="#" class="small-box-footer">Plus de d&eacute;tails
+										<i class="fas fa-arrow-circle-right"></i>
+									</a>
+								</div>
+							</div>
+							<!-- ./col -->
+						</div>
+						<!-- /.row -->
+
+
+						<!-- /.card -->
+
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<i class="fa fa-bullhorn"></i> Les 100 derniers sms re&ccedil;us du jour
+								</h3>
+							</div>
+							<!-- /.card-header -->
+							<div class="card-body">
+								<table id="example1" class="table table-bordered table-striped">
+									<thead>
+										<tr>
+										 	<th>N&deg;</th>
+											<th>Dates</th>
+											<th>Comptes</th>
+											<th>Senders</th>
+											<th>Statuts du SMSC</th>
+											<th>Statuts de livraison</th>
+											<th>Dates d'accus&eacute;</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="p, custStat:${listSms}">
+											<td th:text="${custStat.count}"></td>
+											<td th:text="${p.dateCreation}"></td>
+											<td th:text="${p.compte.compte}"></td>
+											<td th:text="${p.sender}"></td>
+											<td th:text="${p.statutSmsc}"></td>
+											<td th:text="${p.StatutDelivered}"></td>
+											<td th:text="${p.dateAccuseReception}"></td>
+											
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+							<!-- /.card-body -->
+						</div>
+						<!-- /.card -->
+					</div>
+					<!-- /.container-fluid -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.content-wrapper -->
+		</div>
+
+
+		<!-- Footer Start -->
+		<th:block th:include="partials/_footer/index :: footer"></th:block>
+		<!-- Footer End -->
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- Debut Foot -->
+	<th:block th:include="partials/_foot/index :: foot"></th:block>
+	<!-- Fin Foot -->
+</body>
+</html>

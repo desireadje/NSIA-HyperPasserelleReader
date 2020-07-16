@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Debut Header -->
+<th:block th:include="partials/_head/index :: head"></th:block>
+<!-- Fin Header -->
+
+
+<body class="hold-transition sidebar-mini layout-fixed">
+	<div class="wrapper">
+
+		<!-- Debut TopBar -->
+		<th:block th:include="partials/_topbar/index :: topbar"></th:block>
+		<!-- Fin TopBar -->
+
+		<!-- Main Sidebar Container -->
+		<!-- Debut Left Side Bar -->
+		<th:block th:include="partials/_left_sidebar/index :: left-sidebar"></th:block>
+		<!-- Fin Left Side Bar -->
+
+
+		<div class="content" th:fragment="container">
+			<!-- Content Wrapper. Contains page content -->
+			<div class="content-wrapper">
+
+				<!-- Content Header (Page header) -->
+				<div class="content-header">
+					<div class="container-fluid">
+						<div class="row mb-2">
+							<div class="col-sm-6">
+								<h1 class="m-0 text-dark">Comptes</h1>
+							</div>
+							<!-- /.col -->
+							<div class="col-sm-6">
+								<ol class="breadcrumb float-sm-right">
+									<li class="breadcrumb-item"><a href="#">Accueil</a></li>
+									<li class="breadcrumb-item"><a href="#">Comptes</a></li>
+									<li class="breadcrumb-item active">Comptes</li>
+								</ol>
+							</div>
+							<!-- /.col -->
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.container-fluid -->
+				</div>
+				<!-- /.content-header -->
+
+				<!-- Main content -->
+				<section class="content">
+					<div class="container-fluid">
+
+
+						<!-- Main content -->
+						<section class="content">
+							<div class="container-fluid">
+								<div class="row">
+									<!-- left column -->
+									<div class="col-md-12">
+										<!-- jquery validation -->
+										<div class="card card-primary">
+											<div class="card-header">
+												<h3 class="card-title">Formulaire de cr&eacute;ation
+													d'un compte</h3>
+											</div>
+											<!-- /.card-header -->
+											<!-- form start -->
+											<form th:action="@{/compte/create}" method="post"
+												autocomplete="off" role="form" th:object="${Compte}">
+
+												<div class="card-body">
+
+													<!-- client -->
+													<div class="form-group">
+														<label for="idClient">Client</label> <select
+															for="idClient" th:field="*{client}" class="form-control"
+															style="width: 100%;">
+															<option th:each="c: ${Clients}" th:value="${c.username}"
+																th:text="${c.nom}" />
+														</select>
+													</div>
+
+													<div class="row">
+
+														<div class="col-md-6">
+															<!-- nom -->
+															<div class="form-group">
+																<label for="designation">D&eacute;signation</label> <input
+																	type="text" th:field="*{designation}"
+																	class="form-control" id="designation" /> <span
+																	class="text-danger" th:errors="*{designation}"></span>
+															</div>
+														</div>
+
+														<div class="col-md-6">
+															<!-- client -->
+															<div class="form-group">
+																<label for="idDestination">Destination</label> <select
+																	for="idDestination" th:field="*{destination}"
+																	class="form-control" style="width: 100%;">
+																	<option th:each="c: ${Destinations}"
+																		th:value="${c.idDestination}" th:text="${c.nom}" />
+																</select>
+															</div>
+														</div>
+
+
+													</div>
+
+
+
+													<!-- *{typeCompte} -->
+													<div class="form-group">
+														<label for="*{typeCompte}">Type de compte</label> <select
+															for="*{typeCompte}" th:field="*{typeCompte}"
+															class="form-control" style="width: 100%;">
+															<option th:each="c: ${TypeComptes}"
+																th:value="${c.idTypeCompte}" th:text="${c.nom}" />
+														</select>
+													</div>
+
+
+													<div class="row">
+														<div class="col-md-6">
+
+
+															<!-- *{typeCompte} -->
+															<div class="form-group">
+																<label for="*{voieNationale}">Voie nationale</label> <select
+																	for="*{voieNationale}" th:field="*{voieNationale}"
+																	class="form-control" style="width: 100%;">
+																	<option th:each="c: ${VoiesNationale}"
+																		th:value="${c.idVoie}" th:text="${c.nom}" />
+																</select>
+															</div>
+
+															<!-- Prix unitaire
+																	national (FCFA) -->
+															<div class="form-group">
+																<label for="prixUnitaireNational">Prix unitaire
+																	national (FCFA)</label> <input type="text"
+																	th:field="*{prixUnitaireNational}" class="form-control"
+																	id="prixUnitaireNational" /> <span class="text-danger"
+																	th:errors="*{prixUnitaireNational}"></span>
+															</div>
+															
+															<!-- Login -->
+															<div class="form-group">
+																<label for="login">Login</label> <input type="text"
+																	th:field="*{login}"
+																	class="form-control" id="login" />
+																<span class="text-danger"
+																	th:errors="*{login}"></span>
+															</div>
+														</div>
+
+														<div class="col-md-6">
+
+
+
+															<!-- *{typeCompte} -->
+															<div class="form-group">
+																<label for="*{voieInternationale}">Voie
+																	internationale</label> <select for="*{voieInternationale}"
+																	th:field="*{voieInternationale}" class="form-control"
+																	style="width: 100%;">
+																	<option th:each="c: ${VoiesInternationale}"
+																		th:value="${c.idVoie}" th:text="${c.nom}" />
+																</select>
+															</div>
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="prixUnitaireInternational">Prix
+																	unitaire international (FCFA)</label> <input type="text"
+																	th:field="*{prixUnitaireInternational}"
+																	class="form-control" id="prixUnitaireInternational" />
+																<span class="text-danger"
+																	th:errors="*{prixUnitaireInternational}"></span>
+															</div>
+															
+															<!-- Mot de passe -->
+															<div class="form-group">
+																<label for="password">Mot de passe</label> <input type="password"
+																	th:field="*{password}"
+																	class="form-control" id="password" />
+																<span class="text-danger"
+																	th:errors="*{password}"></span>
+															</div>
+
+														</div>
+
+													</div>
+
+
+													<!-- nom -->
+													<div class="form-group">
+														<label for="compte">N&deg; de compte</label> <input
+															type="text" th:field="*{compte}" class="form-control"
+															id="compte" placeholder="" readonly="readonly" /> <span
+															class="text-danger" th:errors="*{compte}"></span>
+													</div>
+
+
+
+													<div class="row">
+
+														<div class="col-md-6">
+
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="creditAlloue">Cr&eacute;dit
+																	allou&eacute; (FCFA)</label> <input type="text"
+																	th:field="*{creditAlloue}" class="form-control"
+																	id="prix" placeholder="" readonly="readonly" /> <span
+																	class="text-danger" th:errors="*{creditAlloue}"></span>
+															</div>
+														</div>
+														<div class="col-md-6">
+
+
+
+															<!-- nom -->
+															<div class="form-group">
+																<label for="dernierRechargement">Dernier
+																	rechargement (FCFA)</label> <input type="text"
+																	th:field="*{dernierRechargement}" class="form-control"
+																	id="dernierRechargement" placeholder=""
+																	readonly="readonly" /> <span class="text-danger"
+																	th:errors="*{dernierRechargement}"></span>
+															</div>
+														</div>
+													</div>
+												</div>
+												<!-- /.card-body -->
+												<div class="card-footer">
+													<a th:href="@{/compte}" type="button"
+														class="btn btn-default"> <span class="fa fa-reply-all"></span>
+														Retour
+													</a>
+													<button type="submit" class="btn btn-primary">
+														<span class="fa fa-save"></span> Enregistrer
+													</button>
+												</div>
+											</form>
+										</div>
+										<!-- /.card -->
+									</div>
+									<!--/.col (left) -->
+									<!-- right column -->
+									<div class="col-md-6"></div>
+									<!--/.col (right) -->
+								</div>
+								<!-- /.row -->
+							</div>
+							<!-- /.container-fluid -->
+						</section>
+						<!-- /.content -->
+
+
+					</div>
+					<!-- /.container-fluid -->
+				</section>
+				<!-- /.content -->
+			</div>
+			<!-- /.content-wrapper -->
+		</div>
+
+
+		<!-- Footer Start -->
+		<th:block th:include="partials/_footer/index :: footer"></th:block>
+		<!-- Footer End -->
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- Debut Foot -->
+	<th:block th:include="partials/_foot/index :: foot"></th:block>
+	<!-- Fin Foot -->
+</body>
+</html>
+
