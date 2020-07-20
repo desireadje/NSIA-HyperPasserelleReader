@@ -14,7 +14,7 @@ public interface PasserelleRepository extends JpaRepository<Passerelle, Long> {
 	List<Passerelle> findAllPasserelle();
 
 	// Cette requête retourne une ligne de passerelle
-	@Query("SELECT p FROM Passerelle p WHERE p.ipPsrl = ?1 AND etatPsrl = 1")
-	Passerelle findPasserelleById(String ip);
+	@Query("SELECT p FROM Passerelle p WHERE p.ip_pass = ?1 AND etat_pass = 1")
+	Passerelle findPasserelleByIp(String ip_pass);
 
 }

@@ -35,7 +35,7 @@ public class Sms implements Serializable {
 	private int etatSms = 1;
 
 	@ManyToOne
-	@JoinColumn(name = "passerelle", referencedColumnName = "ipPsrl")
+	@JoinColumn(name = "ip_pass", referencedColumnName = "ip_pass")
 	private Passerelle passerelle;
 
 	public Sms() {

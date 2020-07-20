@@ -9,8 +9,12 @@ import com.hyperaccesss.entities.Sms;
 
 public interface SmsRepository extends JpaRepository<Sms, Long> {
 
-	// Cette requête retourne une ligne de sms
+	// Cette requête retourne une ligne de sms (un object de type sms)
 	@Query("SELECT s FROM Sms s WHERE s.codeSms = ?1")
 	Sms findSmsInByCode(String codesms);
+	
+	
+	@Query("SELECT s FROM Sms s WHERE s.passerelle.ip_pass= ?1 AND s.etatSms = 0")
+	List<Sms> findAllSmsByIpPasserelle(String ip);
 
 }
