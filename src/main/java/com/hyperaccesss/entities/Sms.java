@@ -35,7 +35,16 @@ public class Sms implements Serializable {
 	private int etatSms = 1;
 
 	@ManyToOne
-	@JoinColumn(name = "ip_pass", referencedColumnName = "ip_pass")
+	@JoinColumn(name = "ip_pass", referencedColumnName = "ip_pass") /**
+																	 * name : nom porté par l'attribut de la classe
+																	 * fille(Sms)
+																	 * 
+																	 * referencedColumnName : attribut de la classe père
+																	 * visé (Paserrelle)
+																	 * 
+																	 * Rg : plusieur sms sont recuperer sur une passerelle
+																	 */
+
 	private Passerelle passerelle;
 
 	public Sms() {

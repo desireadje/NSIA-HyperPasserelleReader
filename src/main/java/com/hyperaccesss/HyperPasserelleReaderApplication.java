@@ -57,6 +57,7 @@ public class HyperPasserelleReaderApplication {
  * 
  * Signification des etat_sms
  * 0 : le sms viens d'etre recuperer sur la passerelle et vient d'etre enregistrer dans la BD
+ * 1 : le sms viens 
  * 
  * 
  * */

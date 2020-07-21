@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,8 +53,9 @@ public class FileDownloadScheduler {
 	Date date = new Date();
 	String data_now = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
 
+	// cette fonction permert de recuperer les cdr sur la passerelle
 	@Scheduled(fixedDelay = 10000)
-	public void FileDownload() {
+	public void FileDownload() throws MalformedURLException, IOException {
 
 		List<Passerelle> passerelles = null;
 
@@ -82,21 +85,35 @@ public class FileDownloadScheduler {
 				assertFalse(ipDir.exists());
 				assertFalse(ipDir.mkdir());
 
-				try (BufferedInputStream inputStream = new BufferedInputStream(
-						new URL("http://" + ip + "/cb/LCR-CDRs.php?password=admin&action=get&filename=" + file_name
-								+ "&filetype=cdr&internal=0&format=text").openStream());
+				// je formate mon url
+				String url_pass = passerelle.getUrl_pass();
 
-						FileOutputStream fileOS = new FileOutputStream(
-								diskLog + dirApp + dirDownlaod + ip + "/" + file_name + file_ext)) {
-					byte data[] = new byte[1024];
-					int byteContent;
-					while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
-						fileOS.write(data, 0, byteContent);
+				String url_ip = url_pass.replace("[IP]", ip);
+				String url = url_ip.replace("[FILE_NAME]", file_name);
+
+				// tester un ping sur la paessrelle ip (chercher comment faire un ping en Spring
+				// boot)
+				HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+				connection.setRequestMethod("HEAD");
+				int responseCode = connection.getResponseCode();
+				
+				if (responseCode == 200) {
+					try (BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
+
+							FileOutputStream fileOS = new FileOutputStream(
+									diskLog + dirApp + dirDownlaod + ip + "/" + file_name + file_ext)) {
+						byte data[] = new byte[1024];
+						int byteContent;
+						while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
+							fileOS.write(data, 0, byteContent);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
+					System.out.println(data_now + " Recuperation des SMS de la passerelle " + ip);
+				} else {
+					System.out.println(data_now + " Aucun SMS récupérer sur la passerelle " + ip);
 				}
-				System.out.println(data_now + " Recuperation des SMS de la passerelle " + ip);
 			}
 		} else {
 			System.out.println(data_now + " Aucune passerelle n'a été trouvé");
@@ -143,7 +160,7 @@ public class FileDownloadScheduler {
 
 							// foramatge du code du sms de la ligne
 							String codesms = DigestUtils.md5Hex(dateformat + line);
-							
+
 							// verification si le code existe ou pas
 							findSmsInByCode = smsRepos.findSmsInByCode(codesms);
 
@@ -250,8 +267,6 @@ public class FileDownloadScheduler {
 		}
 	}
 
-	
-	
 	private void assertTrue(boolean mkdir) {
 		// TODO Auto-generated method stub
 	}
