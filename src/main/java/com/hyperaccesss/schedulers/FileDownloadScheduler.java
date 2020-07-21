@@ -96,7 +96,7 @@ public class FileDownloadScheduler {
 				HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 				connection.setRequestMethod("HEAD");
 				int responseCode = connection.getResponseCode();
-				
+
 				if (responseCode == 200) {
 					try (BufferedInputStream inputStream = new BufferedInputStream(new URL(url).openStream());
 
@@ -112,11 +112,11 @@ public class FileDownloadScheduler {
 					}
 					System.out.println(data_now + " Recuperation des SMS de la passerelle " + ip);
 				} else {
-					System.out.println(data_now + " Aucun SMS récupérer sur la passerelle " + ip);
+					System.err.println(data_now + " Aucun SMS récupéré sur la passerelle " + ip);
 				}
 			}
 		} else {
-			System.out.println(data_now + " Aucune passerelle n'a été trouvé");
+			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
 		}
 
 	}
@@ -150,59 +150,66 @@ public class FileDownloadScheduler {
 				// C:/hyperPasserelleReader/TELECHARGEMENT/192.168.9.2/SMS_IN_20200720.log.txt
 				String fileReader = diskLog + dirApp + dirDownlaod + ip + "/" + file_name;
 
-				try {
-					// lecture des lignes du fichier
-					allLines = Files.readAllLines(Paths.get(fileReader));
+				if (Files.exists(Paths.get(fileReader))) {
+					try {
+						// lecture des lignes du fichier
+						allLines = Files.readAllLines(Paths.get(fileReader));
 
-					if (allLines != null) {
+						if (allLines != null) {
 
-						for (String line : allLines) {
+							for (String line : allLines) {
 
-							// foramatge du code du sms de la ligne
-							String codesms = DigestUtils.md5Hex(dateformat + line);
+								// foramatge du code du sms de la ligne
+								String codesms = DigestUtils.md5Hex(dateformat + line);
 
-							// verification si le code existe ou pas
-							findSmsInByCode = smsRepos.findSmsInByCode(codesms);
+								// verification si le code existe ou pas
+								findSmsInByCode = smsRepos.findSmsInByCode(codesms);
 
-							if (findSmsInByCode == null) {
+								if (findSmsInByCode == null) {
 
-								// je split chaque line recuperée
-								String delimiter = "\\|";
-								String[] parts = line.split(delimiter);
+									// je split chaque line recuperée
+									String delimiter = "\\|";
+									String[] parts = line.split(delimiter);
 
-								SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+									SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
-								Date dateRecep = formatter.parse(parts[0]);
-								String expediteur = parts[3];
-								String message = parts[4];
+									Date dateRecep = formatter.parse(parts[0]);
+									String expediteur = parts[3];
+									String message = parts[4];
 
-								// enregistrement dans la base de donnees
-								Sms sms = new Sms();
+									// enregistrement dans la base de donnees
+									Sms sms = new Sms();
 
-								sms.setCodeSms(codesms);
-								sms.setExpediteurSms(expediteur);
-								sms.setMessage(message);
-								sms.setDateReception(dateRecep);
+									sms.setCodeSms(codesms);
+									sms.setExpediteurSms(expediteur);
+									sms.setMessage(message);
+									sms.setDateReception(dateRecep);
+									sms.setDateInsertion(formatter.parse(data_now));
 
-								sms.setPasserelle(passerelle);
+									sms.setPasserelle(passerelle);
 
-								smsRepos.save(sms);
+									smsRepos.save(sms);
+								}
 							}
+
+						} else {
+							System.err.println(data_now + " fichier " + fileReader + "introuable");
 						}
 
-					} else {
-						System.out.println(data_now + " fichier " + fileReader + "introuable");
+					} catch (FileNotFoundException e) {
+						System.err.println(data_now + " Unable to find the file: " + fileReader);
+					} catch (IOException e) {
+						System.err.println(data_now + " Unable to read the file: " + fileReader);
 					}
-
-				} catch (FileNotFoundException e) {
-					System.err.println(data_now + " Unable to find the file: " + fileReader);
-				} catch (IOException e) {
-					System.err.println(data_now + " Unable to read the file: " + fileReader);
+				} else {
+					System.err.println(
+							data_now + " Impossible de lire le fichier " + fileReader + " de la passerelle " + ip);
 				}
+
 				System.out.println(data_now + " Enregistrement dans la BD des SMS de la passerelle " + ip);
 			}
 		} else {
-			System.out.println(data_now + " Aucune passerelle n'a été trouvé");
+			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
 		}
 
 	}
@@ -258,12 +265,12 @@ public class FileDownloadScheduler {
 
 					}
 				} else {
-					System.out.println(data_now + " Liste de SMS vide");
+					System.err.println(data_now + " Liste de SMS vide");
 				}
 				System.out.println(data_now + " Mise a disposition des SMS de la passerelle " + ip);
 			}
 		} else {
-			System.out.println(data_now + " Aucune passerelle n'a été trouvé");
+			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
 		}
 	}
 
