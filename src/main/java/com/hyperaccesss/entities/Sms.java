@@ -32,7 +32,7 @@ public class Sms implements Serializable {
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
 	private Date dateInsertion;
 
-	private int etatSms = 1;
+	private int etatSms = 0;
 
 	@ManyToOne
 	@JoinColumn(name = "ip_pass", referencedColumnName = "ip_pass") /**

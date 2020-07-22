@@ -51,9 +51,9 @@ public class HyperPasserelleReaderApplication {
 /** 
  * 1- Lecture des SMS sur chaque passerelle et les enregistrer dans le dossier download
  * 
- * 2- Lecture de chaque fichiers pour les mettre dans la BD
+ * 2- Lecture de chaque fichiers pour les mettre dans la BD, le sms est enregistré en BD avec etat à -1
  * 
- * 3- Lecture des SMS dans la BD et creer un fichier du jour et les mettre dans le dossier IN
+ * 3- Lecture des SMS dans la BD des sms du jour et creer un fichier du jour et les mettre dans le dossier IN
  * 
  * Signification des etat_sms
  * 0 : le sms viens d'etre recuperer sur la passerelle et vient d'etre enregistrer dans la BD

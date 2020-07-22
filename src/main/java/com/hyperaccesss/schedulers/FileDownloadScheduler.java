@@ -28,7 +28,6 @@ import com.hyperaccesss.entities.Passerelle;
 import com.hyperaccesss.entities.Sms;
 import com.hyperaccesss.repositories.PasserelleRepository;
 import com.hyperaccesss.repositories.SmsRepository;
-import com.lowagie.text.pdf.codec.Base64.OutputStream;
 
 @Component
 public class FileDownloadScheduler {
@@ -52,14 +51,15 @@ public class FileDownloadScheduler {
 
 	Date date = new Date();
 	String data_now = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
+	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	// cette fonction permert de recuperer les cdr sur la passerelle
-	@Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 5000)
 	public void FileDownload() throws MalformedURLException, IOException {
 
 		List<Passerelle> passerelles = null;
 
-		// recuperation de la liste des passerelle
+		// recuperation de la liste des passerelles
 		passerelles = passerelleRepos.findAllPasserelle();
 
 		if (passerelles != null) {
@@ -85,7 +85,7 @@ public class FileDownloadScheduler {
 				assertFalse(ipDir.exists());
 				assertFalse(ipDir.mkdir());
 
-				// je formate mon url
+				// je formate mon url de telechargement
 				String url_pass = passerelle.getUrl_pass();
 
 				String url_ip = url_pass.replace("[IP]", ip);
@@ -104,13 +104,14 @@ public class FileDownloadScheduler {
 									diskLog + dirApp + dirDownlaod + ip + "/" + file_name + file_ext)) {
 						byte data[] = new byte[1024];
 						int byteContent;
+
 						while ((byteContent = inputStream.read(data, 0, 1024)) != -1) {
 							fileOS.write(data, 0, byteContent);
 						}
+						System.out.println(data_now + " Recuperation des SMS de la passerelle " + ip);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					System.out.println(data_now + " Recuperation des SMS de la passerelle " + ip);
 				} else {
 					System.err.println(data_now + " Aucun SMS récupéré sur la passerelle " + ip);
 				}
@@ -118,12 +119,11 @@ public class FileDownloadScheduler {
 		} else {
 			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
 		}
-
 	}
 
 	// cette fonction permet de recuperer les sms des fichier vers la bd avec un
 	// code
-	@Scheduled(fixedDelay = 15000)
+	@Scheduled(fixedDelay = 7000)
 	public void ReadFile() throws ParseException {
 
 		// Mes declarations locales
@@ -170,8 +170,7 @@ public class FileDownloadScheduler {
 									// je split chaque line recuperée
 									String delimiter = "\\|";
 									String[] parts = line.split(delimiter);
-
-									SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+									System.err.println("=>>>>>>>=>>>>>>>><" + parts.length);
 
 									Date dateRecep = formatter.parse(parts[0]);
 									String expediteur = parts[3];
@@ -184,16 +183,17 @@ public class FileDownloadScheduler {
 									sms.setExpediteurSms(expediteur);
 									sms.setMessage(message);
 									sms.setDateReception(dateRecep);
-									sms.setDateInsertion(formatter.parse(data_now));
+									sms.setDateInsertion(date);
 
 									sms.setPasserelle(passerelle);
+									sms.setEtatSms(-1);
 
 									smsRepos.save(sms);
 								}
 							}
 
 						} else {
-							System.err.println(data_now + " fichier " + fileReader + "introuable");
+							System.out.println(data_now + " fichier " + fileReader + "introuable");
 						}
 
 					} catch (FileNotFoundException e) {
@@ -216,36 +216,43 @@ public class FileDownloadScheduler {
 
 	// cette fonction prmet d'aller lire dans la bd et mettre les fichier a
 	// disposition
-	@Scheduled(fixedDelay = 18000)
-	public void Exporte() throws IOException {
-		List<Passerelle> passerelles = passerelleRepos.findAll();
+	@Scheduled(fixedDelay = 5000)
+	public void Exporte() throws IOException, ParseException {
+		// mes valiables local
+		List<Passerelle> passerelles = null;
+		List<Sms> allSms = null;
 
-		if (!passerelles.isEmpty()) {
+		passerelles = passerelleRepos.findAllPasserelle();
+
+		if (passerelles != null) {
 			for (Passerelle passerelle : passerelles) {
 
 				String ip = passerelle.getIp_pass();
 
-				// selection des sms de la passerelle
-				List<Sms> allSms = smsRepos.findAllSmsByIpPasserelle(ip);
+				// selection des sms du jour de la passerelle du jour
+				allSms = smsRepos.findAllSmsByIpPasserelle(ip);
 
-				if (!allSms.isEmpty()) {
+				if (allSms != null) {
 					for (Sms sms : allSms) {
 
 						String dateformat = new SimpleDateFormat("yyyyMMdd").format(date);
 
 						String fileReader = "SMS_IN_" + dateformat + ".log" + file_ext;
 
-						String file_name = diskLog + dirApp + "IN/" + ip + "/" + fileReader;
+						// String file_name = diskLog + dirApp + "IN/" + ip + "/" + fileReader; //
+						// C:/hyperPasserelleReader/IN/192.168.9.2
+						String file_name = diskLog + dirApp + "IN/" + fileReader; // C:/hyperPasserelleReader/IN
 
-						File f = new File(file_name);
+						File file = new File(file_name);
 
-						if (!f.exists()) {
+						// je verifie si le fichier existe deja
+						if (!file.exists()) {
 							// creation du fichier
 							Path newFilePath = Paths.get(file_name);
 							Files.createFile(newFilePath);
 						}
 
-						// ajout d'une nouvelle ligne dans le repertoire
+						// j'ajoute une nouvelle ligne dans le fichier
 						try (FileWriter fw = new FileWriter(file_name, true);
 								BufferedWriter bw = new BufferedWriter(fw);
 								PrintWriter pw = new PrintWriter(bw);) {
@@ -254,20 +261,19 @@ public class FileDownloadScheduler {
 
 							pw.println(content);
 
-							// mise a jour de l'etat dans la bd
-							sms.setEtatSms(1);
+							// mise a jour de l'etat dans la bd a 0
+							sms.setEtatSms(0);
 
 							smsRepos.save(sms);
 
 						} catch (IOException i) {
 							i.printStackTrace();
 						}
-
 					}
+					System.out.println(data_now + " Mise a disposition des SMS de la passerelle " + ip);
 				} else {
 					System.err.println(data_now + " Liste de SMS vide");
 				}
-				System.out.println(data_now + " Mise a disposition des SMS de la passerelle " + ip);
 			}
 		} else {
 			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
