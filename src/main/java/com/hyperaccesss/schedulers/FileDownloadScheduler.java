@@ -54,7 +54,7 @@ public class FileDownloadScheduler {
 	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	// cette fonction permert de recuperer les cdr sur la passerelle
-	@Scheduled(fixedDelay = 5000)
+	// @Scheduled(fixedDelay = 5000)
 	public void FileDownload() throws MalformedURLException, IOException {
 
 		List<Passerelle> passerelles = null;
@@ -130,6 +130,8 @@ public class FileDownloadScheduler {
 		Sms findSmsInByCode = null;
 		List<Passerelle> passerelles = null;
 		List<String> allLines = null;
+		
+		String exp = null;
 
 		// Je récupère ma liste des passerelle
 		passerelles = passerelleRepos.findAllPasserelle();
@@ -170,20 +172,28 @@ public class FileDownloadScheduler {
 									// je split chaque line recuperée
 									String delimiter = "\\|";
 									String[] parts = line.split(delimiter);
-									System.err.println("=>>>>>>>=>>>>>>>><" + parts.length);
 
 									Date dateRecep = formatter.parse(parts[0]);
 									String expediteur = parts[3];
 									String message = parts[4];
 
+									// formatage du numero de l'expéditeur
+									/*int length = expediteur.length();
+								    String sub = expediteur.substring(0, 4);
+								    
+									if (length == 12 && sub == "+225") {
+										exp = expediteur.substring(1, 11);										
+									}*/
+
 									// enregistrement dans la base de donnees
 									Sms sms = new Sms();
 
 									sms.setCodeSms(codesms);
+									
 									sms.setExpediteurSms(expediteur);
 									sms.setMessage(message);
 									sms.setDateReception(dateRecep);
-									sms.setDateInsertion(date);
+									sms.setDateInsertion(new Date());
 
 									sms.setPasserelle(passerelle);
 									sms.setEtatSms(-1);
@@ -211,7 +221,6 @@ public class FileDownloadScheduler {
 		} else {
 			System.err.println(data_now + " Aucune passerelle n'a été trouvé");
 		}
-
 	}
 
 	// cette fonction prmet d'aller lire dans la bd et mettre les fichier a
@@ -237,10 +246,9 @@ public class FileDownloadScheduler {
 
 						String dateformat = new SimpleDateFormat("yyyyMMdd").format(date);
 
-						String fileReader = "SMS_IN_" + dateformat + ".log" + file_ext;
+						String in_foler = new SimpleDateFormat("yyyy-MM-dd").format(date);
 
-						// String file_name = diskLog + dirApp + "IN/" + ip + "/" + fileReader; //
-						// C:/hyperPasserelleReader/IN/192.168.9.2
+						String fileReader = "SMS_IN_" + dateformat + "_" + sms.getCodeSms() + file_ext;
 						String file_name = diskLog + dirApp + "IN/" + fileReader; // C:/hyperPasserelleReader/IN
 
 						File file = new File(file_name);
@@ -257,7 +265,7 @@ public class FileDownloadScheduler {
 								BufferedWriter bw = new BufferedWriter(fw);
 								PrintWriter pw = new PrintWriter(bw);) {
 
-							String content = sms.getCodeSms() + "|" + sms.getMessage() + "|" + sms.getExpediteurSms();
+							String content = sms.getExpediteurSms() + "\n" + sms.getMessage();
 
 							pw.println(content);
 
