@@ -12,6 +12,8 @@ public class FormatNumero {
 
 		if (length == 12 && sub.equals("+225")) {
 			expediteur_formater = expediteur.substring(1, 11);
+		} else if (length == 11 && expediteur.substring(0, 4).equals("225")) {
+			expediteur_formater = expediteur;
 		} else {
 			expediteur_formater = expediteur;
 		}
