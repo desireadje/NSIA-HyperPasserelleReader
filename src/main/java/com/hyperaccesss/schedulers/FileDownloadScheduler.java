@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import com.hyperaccesss.controllers.FormatNumero;
 import com.hyperaccesss.entities.Passerelle;
 import com.hyperaccesss.entities.Sms;
 import com.hyperaccesss.repositories.PasserelleRepository;
@@ -54,8 +55,8 @@ public class FileDownloadScheduler {
 	SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
 	// cette fonction permert de recuperer les cdr sur la passerelle
-	// @Scheduled(fixedDelay = 5000)
-	public void FileDownload() throws MalformedURLException, IOException {
+	@Scheduled(fixedDelay = 5000)
+	public void ReadPasserelle() throws MalformedURLException, IOException {
 
 		List<Passerelle> passerelles = null;
 
@@ -124,14 +125,13 @@ public class FileDownloadScheduler {
 	// cette fonction permet de recuperer les sms des fichier vers la bd avec un
 	// code
 	@Scheduled(fixedDelay = 7000)
-	public void ReadFile() throws ParseException {
+	public void ReadFileToDatabase() throws ParseException {
 
 		// Mes declarations locales
 		Sms findSmsInByCode = null;
 		List<Passerelle> passerelles = null;
 		List<String> allLines = null;
-		
-		String exp = null;
+		Sms sms = null;
 
 		// Je récupère ma liste des passerelle
 		passerelles = passerelleRepos.findAllPasserelle();
@@ -174,22 +174,14 @@ public class FileDownloadScheduler {
 									String[] parts = line.split(delimiter);
 
 									Date dateRecep = formatter.parse(parts[0]);
-									String expediteur = parts[3];
+									String expediteur = FormatNumero.number_F(parts[3]);
 									String message = parts[4];
 
-									// formatage du numero de l'expéditeur
-									/*int length = expediteur.length();
-								    String sub = expediteur.substring(0, 4);
-								    
-									if (length == 12 && sub == "+225") {
-										exp = expediteur.substring(1, 11);										
-									}*/
-
 									// enregistrement dans la base de donnees
-									Sms sms = new Sms();
+									sms = new Sms();
 
 									sms.setCodeSms(codesms);
-									
+
 									sms.setExpediteurSms(expediteur);
 									sms.setMessage(message);
 									sms.setDateReception(dateRecep);
@@ -226,7 +218,7 @@ public class FileDownloadScheduler {
 	// cette fonction prmet d'aller lire dans la bd et mettre les fichier a
 	// disposition
 	@Scheduled(fixedDelay = 5000)
-	public void Exporte() throws IOException, ParseException {
+	public void ReadDatabaseToFolderIn() throws IOException, ParseException {
 		// mes valiables local
 		List<Passerelle> passerelles = null;
 		List<Sms> allSms = null;
@@ -244,21 +236,33 @@ public class FileDownloadScheduler {
 				if (allSms != null) {
 					for (Sms sms : allSms) {
 
-						String dateformat = new SimpleDateFormat("yyyyMMdd").format(date);
+						String dateformat = new SimpleDateFormat("yyyyMMddss.SSS").format(date);
 
-						String in_foler = new SimpleDateFormat("yyyy-MM-dd").format(date);
+						String dossier_du_jour = new SimpleDateFormat("yyyy-MM-dd").format(date);
 
 						String fileReader = "SMS_IN_" + dateformat + "_" + sms.getCodeSms() + file_ext;
-						String file_name = diskLog + dirApp + "IN/" + fileReader; // C:/hyperPasserelleReader/IN
+						String file_name = diskLog + dirApp + "IN/" + dossier_du_jour + "/" + fileReader; // C:/hyperPasserelleReader/IN
 
-						File file = new File(file_name);
+						final File file = new File(file_name);
 
 						// je verifie si le fichier existe deja
 						if (!file.exists()) {
-							// creation du fichier
-							Path newFilePath = Paths.get(file_name);
-							Files.createFile(newFilePath);
+							// je creer un nouveau repertoire du jour
+							final File logDir = new File(diskLog);
+
+							File appDir = new File(logDir, dirApp);
+							File inDir = new File(appDir, "IN/");
+							File dayDir = new File(inDir, dossier_du_jour + "/");
+
+							assertFalse(appDir.exists());
+							assertFalse(inDir.exists());
+							assertFalse(dayDir.exists());
+							assertFalse(dayDir.mkdir());
 						}
+
+						// creation du fichier
+						Path newFilePath = Paths.get(file_name);
+						Files.createFile(newFilePath);
 
 						// j'ajoute une nouvelle ligne dans le fichier
 						try (FileWriter fw = new FileWriter(file_name, true);
@@ -288,6 +292,7 @@ public class FileDownloadScheduler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void assertTrue(boolean mkdir) {
 		// TODO Auto-generated method stub
 	}
