@@ -76,13 +76,16 @@ public class FileDownloadScheduler {
 
 				// je creer un nouveau repertoire de telechargement
 				final File logDir = new File(diskLog);
-
 				File appDir = new File(logDir, dirApp);
 				File downloadDir = new File(appDir, dirDownlaod);
 				File ipDir = new File(downloadDir, ip);
 
 				assertFalse(appDir.exists());
+				assertFalse(appDir.mkdir());
+				
 				assertFalse(downloadDir.exists());
+				assertFalse(downloadDir.mkdir());
+				
 				assertFalse(ipDir.exists());
 				assertFalse(ipDir.mkdir());
 
@@ -150,7 +153,8 @@ public class FileDownloadScheduler {
 
 				// fichier a lire :
 				// C:/hyperPasserelleReader/TELECHARGEMENT/192.168.9.2/SMS_IN_20200720.log.txt
-				String fileReader = diskLog + dirApp + dirDownlaod + ip + "/" + file_name;
+				String fileReader = diskLog.replace("\\", "/") + dirApp + dirDownlaod + ip + "/" + file_name;
+				System.err.println(fileReader);
 
 				if (Files.exists(Paths.get(fileReader))) {
 					try {
@@ -241,7 +245,7 @@ public class FileDownloadScheduler {
 						String dossier_du_jour = new SimpleDateFormat("yyyy-MM-dd").format(date);
 
 						String fileReader = "SMS_IN_" + dateformat + "_" + sms.getCodeSms() + file_ext;
-						String file_name = diskLog + dirApp + "IN/" + dossier_du_jour + "/" + fileReader; // C:/hyperPasserelleReader/IN
+						String file_name = diskLog.replace("\\", "/") + dirApp + "IN/" + dossier_du_jour + "/" + fileReader; // C:/hyperPasserelleReader/IN
 
 						final File file = new File(file_name);
 
@@ -255,7 +259,11 @@ public class FileDownloadScheduler {
 							File dayDir = new File(inDir, dossier_du_jour + "/");
 
 							assertFalse(appDir.exists());
+							assertFalse(appDir.mkdir());
+							
 							assertFalse(inDir.exists());
+							assertFalse(inDir.mkdir());
+							
 							assertFalse(dayDir.exists());
 							assertFalse(dayDir.mkdir());
 						}
