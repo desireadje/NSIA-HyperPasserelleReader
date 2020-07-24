@@ -82,10 +82,10 @@ public class FileDownloadScheduler {
 
 				assertFalse(appDir.exists());
 				assertFalse(appDir.mkdir());
-				
+
 				assertFalse(downloadDir.exists());
 				assertFalse(downloadDir.mkdir());
-				
+
 				assertFalse(ipDir.exists());
 				assertFalse(ipDir.mkdir());
 
@@ -154,7 +154,7 @@ public class FileDownloadScheduler {
 				// fichier a lire :
 				// C:/hyperPasserelleReader/TELECHARGEMENT/192.168.9.2/SMS_IN_20200720.log.txt
 				String fileReader = diskLog.replace("\\", "/") + dirApp + dirDownlaod + ip + "/" + file_name;
-				System.err.println(fileReader);
+				//System.err.println(fileReader);
 
 				if (Files.exists(Paths.get(fileReader))) {
 					try {
@@ -178,23 +178,31 @@ public class FileDownloadScheduler {
 									String[] parts = line.split(delimiter);
 
 									Date dateRecep = formatter.parse(parts[0]);
-									String expediteur = FormatNumero.number_F(parts[3]);
-									String message = parts[4];
 
-									// enregistrement dans la base de donnees
-									sms = new Sms();
+								
 
-									sms.setCodeSms(codesms);
+									if (isNumeric(parts[3]) == true) {
+										
+										String expediteur = FormatNumero.number_F(parts[3]);
+										
+										String message = parts[4];
 
-									sms.setExpediteurSms(expediteur);
-									sms.setMessage(message);
-									sms.setDateReception(dateRecep);
-									sms.setDateInsertion(new Date());
+										// enregistrement dans la base de donnees
+										sms = new Sms();
 
-									sms.setPasserelle(passerelle);
-									sms.setEtatSms(-1);
+										sms.setCodeSms(codesms);
 
-									smsRepos.save(sms);
+										sms.setExpediteurSms(expediteur);
+										sms.setMessage(message);
+										sms.setDateReception(dateRecep);
+										sms.setDateInsertion(new Date());
+
+										sms.setPasserelle(passerelle);
+										sms.setEtatSms(-1);
+
+										smsRepos.save(sms);
+									}
+
 								}
 							}
 
@@ -245,7 +253,8 @@ public class FileDownloadScheduler {
 						String dossier_du_jour = new SimpleDateFormat("yyyy-MM-dd").format(date);
 
 						String fileReader = "SMS_IN_" + dateformat + "_" + sms.getCodeSms() + file_ext;
-						String file_name = diskLog.replace("\\", "/") + dirApp + "IN/" + dossier_du_jour + "/" + fileReader; // C:/hyperPasserelleReader/IN
+						String file_name = diskLog.replace("\\", "/") + dirApp + "IN/" + dossier_du_jour + "/"
+								+ fileReader; // C:/hyperPasserelleReader/IN
 
 						final File file = new File(file_name);
 
@@ -260,10 +269,10 @@ public class FileDownloadScheduler {
 
 							assertFalse(appDir.exists());
 							assertFalse(appDir.mkdir());
-							
+
 							assertFalse(inDir.exists());
 							assertFalse(inDir.mkdir());
-							
+
 							assertFalse(dayDir.exists());
 							assertFalse(dayDir.mkdir());
 						}
@@ -307,5 +316,14 @@ public class FileDownloadScheduler {
 
 	private void assertFalse(boolean exists) {
 		// TODO Auto-generated method stub
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			Double.parseDouble(str);
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 }

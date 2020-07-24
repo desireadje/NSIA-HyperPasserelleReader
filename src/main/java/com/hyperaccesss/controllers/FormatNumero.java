@@ -4,22 +4,58 @@ public class FormatNumero {
 
 	public static String number_F(String expediteur) {
 
-		String expediteur_formater = null;
-		// formatage du numero de l'expéditeur
-		int length = expediteur.length();
-		String sub = expediteur.substring(0, 4);
+		System.out.println("Est numérique : "+ isNumeric(expediteur));
+		// Mes declarations
+		String numero = null;
+		String indicatif = null;
+		int taille = 0;
 
-		if (length == 12 && sub.equals("+225")) {
-			expediteur_formater = expediteur.substring(1, 11);
-		} else if (length == 11 && expediteur.substring(0, 4).equals("225")) {
-			expediteur_formater = expediteur;
-		} else {
-			expediteur_formater = expediteur;
+		// Je recupère la taille du numéro expéditeur
+		taille = expediteur.length();
+
+		
+		if(isNumeric(expediteur) == true) {
+			// Si le numéro existe alors
+			if (taille > 0) {		
+				
+				
+				// Je recupère le l'indicatif pays +225
+				indicatif = expediteur.substring(0, 4);	
+				
+
+				// Si la taille du numéro égale à 12 caractères alors
+				if (taille == 12) {
+
+					// Si l'indicatif est +225 alors
+					if (indicatif.equalsIgnoreCase("+225")) {
+						numero = expediteur.substring(1, 11);
+					}
+				} else if (taille == 11) {
+					// Si l'indicatif est +225 alors
+					if (indicatif.equalsIgnoreCase("225")) {
+						numero = expediteur;
+					}
+
+				} else {
+					numero = expediteur;
+				}
+			}
 		}
+		
 
-		return expediteur_formater;
+		return numero;
 	}
 
+	
+	public static boolean isNumeric(String str) { 
+		  try {  
+		    Double.parseDouble(str);  
+		    return true;
+		  } catch(NumberFormatException e){  
+		    return false;  
+		  }  
+		}
+	
 	private static boolean ValidatePhoneNumber(String phoneNo) {
 
 		// valider les numéros de téléphone au format "1234567890"

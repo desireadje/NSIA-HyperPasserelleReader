@@ -4,15 +4,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -22,8 +17,6 @@ public class Role implements Serializable {
 	// Attributs
 	@Id
 	private String role;
-	@NotEmpty()
-	@Size(min = 3, max = 30)
 	private String description;
 	private int etat = 1;
 	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
